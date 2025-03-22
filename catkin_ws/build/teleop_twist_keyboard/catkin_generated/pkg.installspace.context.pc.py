@@ -5,4 +5,4 @@ PROJECT_CATKIN_DEPENDS = "".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "".split(';') if "" != "" else []
 PROJECT_NAME = "teleop_twist_keyboard"
 PROJECT_SPACE_DIR = "/workspace/catkin_ws/install"
-PROJECT_VERSION = "1.0.0"
+PROJECT_VERSION = "0.0.0"

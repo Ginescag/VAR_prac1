@@ -132,6 +132,7 @@ include_directories(
 
 ## Declare a C++ executable
  add_executable(get_pointclouds_node src/node.cpp)
+ add_executable(prac1 src/prac.cpp)
 
 ## Add cmake target dependencies of the executable
 ## same as for the library above
@@ -143,6 +144,10 @@ include_directories(
    ${PCL_LIBRARIES} 
    pcl_visualization
  )
+ 
+ target_link_libraries(prac1
+ ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##

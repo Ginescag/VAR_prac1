@@ -6,6 +6,8 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/visualization/cloud_viewer.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/keypoints/iss_3d.h>
+#include <pcl/registration/gicp.h>
 
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr visu_pc (new pcl::PointCloud<pcl::PointXYZRGB>);
 
@@ -34,7 +36,48 @@ void callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 	cout << "Puntos tras VG: " << cloud_filtered->size() << endl;
 
-	visu_pc = cloud_filtered;
+
+	//deteccion de caracteristicas con ISS
+	pcl::ISSKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZRGB> detectorISS;
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr keypoints(new pcl::PointCloud<pcl::PointXYZRGB>);
+
+	detectorISS.setInputCloud(cloud_filtered);
+	detectorISS.setSalientRadius(0.2);
+	detectorISS.setNonMaxRadius(0.4);
+	detectorISS.setThreshold21(0.975);
+	detectorISS.setThreshold32(0.975);
+	detectorISS.setMinNeighbors(5);
+	detectorISS.setNumberOfThreads(4);
+	detectorISS.compute(*keypoints);
+
+	cout << "Puntos tras ISS: " << keypoints->size() << endl;
+
+	//usar RANSAC para emparejar las nubes de puntos
+
+
+	pcl::GeneralizedIterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> ransac;
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr aligned_cloud (new pcl::PointCloud<pcl::PointXYZRGB>);
+
+	ransac.setInputSource(cloud_filtered);
+	ransac.setInputTarget(keypoints);
+	ransac.align(*aligned_cloud);
+
+	if(ransac.hasConverged())
+	{
+		cout << "ransac converged" << endl;
+		cout << "The score is: " << ransac.getFitnessScore() << endl;
+		cout << "Transformation matrix:" << endl;
+		cout << ransac.getFinalTransformation() << endl;
+		pcl::io::savePCDFileASCII("aligned_cloud.pcd", *aligned_cloud);
+        std::cout << "La nube de puntos alineada ha sido guardada en 'aligned_cloud.pcd'" << std::endl;
+	}
+	else
+	{
+		cout << "ransac did not converge" << endl;
+	}
+
+
+	visu_pc = aligned_cloud;
 }
 
 int main(int argc, char** argv)
