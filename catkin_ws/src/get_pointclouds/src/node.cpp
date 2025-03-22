@@ -11,6 +11,8 @@
 
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr visu_pc (new pcl::PointCloud<pcl::PointXYZRGB>);
 
+int i = 0;
+
 void simpleVis ()
 {
   	pcl::visualization::CloudViewer viewer ("Simple Cloud Viewer");
@@ -36,48 +38,11 @@ void callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 	cout << "Puntos tras VG: " << cloud_filtered->size() << endl;
 
+	pcl::io::savePCDFileASCII("cloud_filtered" + std::to_string(i) +".pcd", *cloud_filtered);
+	i++;
+    std::cout << "La nube de puntos pasada por vg ha sido guardada en 'cloud_filtered.pcd'" << std::endl;
 
-	//deteccion de caracteristicas con ISS
-	pcl::ISSKeypoint3D<pcl::PointXYZRGB, pcl::PointXYZRGB> detectorISS;
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr keypoints(new pcl::PointCloud<pcl::PointXYZRGB>);
-
-	detectorISS.setInputCloud(cloud_filtered);
-	detectorISS.setSalientRadius(0.2);
-	detectorISS.setNonMaxRadius(0.4);
-	detectorISS.setThreshold21(0.975);
-	detectorISS.setThreshold32(0.975);
-	detectorISS.setMinNeighbors(5);
-	detectorISS.setNumberOfThreads(4);
-	detectorISS.compute(*keypoints);
-
-	cout << "Puntos tras ISS: " << keypoints->size() << endl;
-
-	//usar RANSAC para emparejar las nubes de puntos
-
-
-	pcl::GeneralizedIterativeClosestPoint<pcl::PointXYZRGB, pcl::PointXYZRGB> ransac;
-	pcl::PointCloud<pcl::PointXYZRGB>::Ptr aligned_cloud (new pcl::PointCloud<pcl::PointXYZRGB>);
-
-	ransac.setInputSource(cloud_filtered);
-	ransac.setInputTarget(keypoints);
-	ransac.align(*aligned_cloud);
-
-	if(ransac.hasConverged())
-	{
-		cout << "ransac converged" << endl;
-		cout << "The score is: " << ransac.getFitnessScore() << endl;
-		cout << "Transformation matrix:" << endl;
-		cout << ransac.getFinalTransformation() << endl;
-		pcl::io::savePCDFileASCII("aligned_cloud.pcd", *aligned_cloud);
-        std::cout << "La nube de puntos alineada ha sido guardada en 'aligned_cloud.pcd'" << std::endl;
-	}
-	else
-	{
-		cout << "ransac did not converge" << endl;
-	}
-
-
-	visu_pc = aligned_cloud;
+	visu_pc = cloud_filtered;
 }
 
 int main(int argc, char** argv)

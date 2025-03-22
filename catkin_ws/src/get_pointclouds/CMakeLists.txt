@@ -147,6 +147,8 @@ include_directories(
  
  target_link_libraries(prac1
  ${catkin_LIBRARIES}
+ ${PCL_LIBRARIES} 
+ pcl_visualization
 )
 
 #############
