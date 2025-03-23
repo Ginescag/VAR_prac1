@@ -1,6 +1,8 @@
 {
     "cmake.sourceDirectory": "/home/gines/Escritorio/VAR_prac1/catkin_ws/src/get_pointclouds",
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "core": "cpp",
+        "numericaldiff": "cpp"
     }
 }

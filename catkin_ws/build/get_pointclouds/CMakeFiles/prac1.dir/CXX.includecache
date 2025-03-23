@@ -2492,6 +2492,12 @@ boost/fusion/sequence/intrinsic/at_key.hpp
 boost/optional.hpp
 -
 
+/usr/include/pcl-1.10/pcl/filters/extract_indices.h
+pcl/filters/filter_indices.h
+-
+pcl/filters/impl/extract_indices.hpp
+-
+
 /usr/include/pcl-1.10/pcl/filters/filter.h
 pcl/pcl_base.h
 -
@@ -2508,10 +2514,34 @@ pcl/PointIndices.h
 pcl/filters/impl/filter.hpp
 -
 
+/usr/include/pcl-1.10/pcl/filters/filter_indices.h
+pcl/filters/filter.h
+-
+pcl/filters/impl/filter_indices.hpp
+-
+
+/usr/include/pcl-1.10/pcl/filters/impl/extract_indices.hpp
+pcl/filters/extract_indices.h
+-
+pcl/common/io.h
+-
+
 /usr/include/pcl-1.10/pcl/filters/impl/filter.hpp
 pcl/pcl_macros.h
 -
 pcl/filters/filter.h
+-
+
+/usr/include/pcl-1.10/pcl/filters/impl/filter_indices.hpp
+pcl/pcl_macros.h
+-
+pcl/filters/filter_indices.h
+-
+
+/usr/include/pcl-1.10/pcl/filters/impl/passthrough.hpp
+pcl/filters/passthrough.h
+-
+pcl/common/io.h
 -
 
 /usr/include/pcl-1.10/pcl/filters/impl/voxel_grid.hpp
@@ -2522,6 +2552,12 @@ pcl/common/common.h
 pcl/common/io.h
 -
 pcl/filters/voxel_grid.h
+-
+
+/usr/include/pcl-1.10/pcl/filters/passthrough.h
+pcl/filters/filter_indices.h
+-
+pcl/filters/impl/passthrough.hpp
 -
 
 /usr/include/pcl-1.10/pcl/filters/voxel_grid.h
@@ -2752,6 +2788,32 @@ memory
 pcl/kdtree/impl/kdtree_flann.hpp
 -
 
+/usr/include/pcl-1.10/pcl/keypoints/harris_3d.h
+pcl/keypoints/keypoint.h
+-
+pcl/keypoints/impl/harris_3d.hpp
+-
+
+/usr/include/pcl-1.10/pcl/keypoints/impl/harris_3d.hpp
+pcl/keypoints/harris_3d.h
+-
+pcl/common/io.h
+-
+pcl/filters/passthrough.h
+-
+pcl/filters/extract_indices.h
+-
+pcl/features/normal_3d.h
+-
+pcl/features/integral_image_normal.h
+-
+pcl/common/time.h
+-
+pcl/common/centroid.h
+-
+xmmintrin.h
+-
+
 /usr/include/pcl-1.10/pcl/keypoints/impl/iss_3d.hpp
 pcl/features/boundary.h
 -
@@ -2763,6 +2825,14 @@ pcl/keypoints/iss_3d.h
 -
 
 /usr/include/pcl-1.10/pcl/keypoints/impl/keypoint.hpp
+
+/usr/include/pcl-1.10/pcl/keypoints/impl/sift_keypoint.hpp
+pcl/keypoints/sift_keypoint.h
+-
+pcl/common/io.h
+-
+pcl/filters/voxel_grid.h
+-
 
 /usr/include/pcl-1.10/pcl/keypoints/iss_3d.h
 pcl/keypoints/keypoint.h
@@ -2780,6 +2850,12 @@ pcl/pcl_config.h
 functional
 -
 pcl/keypoints/impl/keypoint.hpp
+-
+
+/usr/include/pcl-1.10/pcl/keypoints/sift_keypoint.h
+pcl/keypoints/keypoint.h
+-
+pcl/keypoints/impl/sift_keypoint.hpp
 -
 
 /usr/include/pcl-1.10/pcl/make_shared.h
@@ -3258,6 +3334,18 @@ pcl/sample_consensus/ransac.h
 omp.h
 -
 
+/usr/include/pcl-1.10/pcl/sample_consensus/impl/sac_model_plane.hpp
+pcl/sample_consensus/sac_model_plane.h
+-
+pcl/common/centroid.h
+-
+pcl/common/eigen.h
+-
+pcl/common/concatenate.h
+-
+pcl/point_types.h
+-
+
 /usr/include/pcl-1.10/pcl/sample_consensus/impl/sac_model_registration.hpp
 pcl/sample_consensus/sac_model_registration.h
 -
@@ -3316,6 +3404,14 @@ pcl/sample_consensus/boost.h
 pcl/sample_consensus/model_types.h
 -
 pcl/search/search.h
+-
+
+/usr/include/pcl-1.10/pcl/sample_consensus/sac_model_plane.h
+pcl/sample_consensus/sac_model.h
+-
+pcl/sample_consensus/model_types.h
+-
+pcl/sample_consensus/impl/sac_model_plane.hpp
 -
 
 /usr/include/pcl-1.10/pcl/sample_consensus/sac_model_registration.h
@@ -4523,10 +4619,22 @@ pcl/visualization/pcl_visualizer.h
 -
 pcl/visualization/cloud_viewer.h
 -
-pcl/filters/voxel_grid.h
+pcl/registration/gicp.h
+-
+pcl/keypoints/sift_keypoint.h
 -
 pcl/keypoints/iss_3d.h
 -
-pcl/registration/gicp.h
+pcl/keypoints/harris_3d.h
+-
+pcl/sample_consensus/ransac.h
+-
+pcl/sample_consensus/sac_model_plane.h
+-
+pcl/common/transforms.h
+-
+pcl/common/centroid.h
+-
+pcl/common/eigen.h
 -
 

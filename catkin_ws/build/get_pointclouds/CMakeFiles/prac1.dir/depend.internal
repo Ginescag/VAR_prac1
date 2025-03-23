@@ -344,9 +344,15 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/features/integral_image_normal.h
  /usr/include/pcl-1.10/pcl/features/normal_3d.h
  /usr/include/pcl-1.10/pcl/filters/boost.h
+ /usr/include/pcl-1.10/pcl/filters/extract_indices.h
  /usr/include/pcl-1.10/pcl/filters/filter.h
+ /usr/include/pcl-1.10/pcl/filters/filter_indices.h
+ /usr/include/pcl-1.10/pcl/filters/impl/extract_indices.hpp
  /usr/include/pcl-1.10/pcl/filters/impl/filter.hpp
+ /usr/include/pcl-1.10/pcl/filters/impl/filter_indices.hpp
+ /usr/include/pcl-1.10/pcl/filters/impl/passthrough.hpp
  /usr/include/pcl-1.10/pcl/filters/impl/voxel_grid.hpp
+ /usr/include/pcl-1.10/pcl/filters/passthrough.h
  /usr/include/pcl-1.10/pcl/filters/voxel_grid.h
  /usr/include/pcl-1.10/pcl/for_each_type.h
  /usr/include/pcl-1.10/pcl/geometry/planar_polygon.h
@@ -363,10 +369,14 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/kdtree/impl/kdtree_flann.hpp
  /usr/include/pcl-1.10/pcl/kdtree/kdtree.h
  /usr/include/pcl-1.10/pcl/kdtree/kdtree_flann.h
+ /usr/include/pcl-1.10/pcl/keypoints/harris_3d.h
+ /usr/include/pcl-1.10/pcl/keypoints/impl/harris_3d.hpp
  /usr/include/pcl-1.10/pcl/keypoints/impl/iss_3d.hpp
  /usr/include/pcl-1.10/pcl/keypoints/impl/keypoint.hpp
+ /usr/include/pcl-1.10/pcl/keypoints/impl/sift_keypoint.hpp
  /usr/include/pcl-1.10/pcl/keypoints/iss_3d.h
  /usr/include/pcl-1.10/pcl/keypoints/keypoint.h
+ /usr/include/pcl-1.10/pcl/keypoints/sift_keypoint.h
  /usr/include/pcl-1.10/pcl/make_shared.h
  /usr/include/pcl-1.10/pcl/octree/impl/octree_base.hpp
  /usr/include/pcl-1.10/pcl/octree/impl/octree_iterator.hpp
@@ -418,11 +428,13 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/sample_consensus/boost.h
  /usr/include/pcl-1.10/pcl/sample_consensus/eigen.h
  /usr/include/pcl-1.10/pcl/sample_consensus/impl/ransac.hpp
+ /usr/include/pcl-1.10/pcl/sample_consensus/impl/sac_model_plane.hpp
  /usr/include/pcl-1.10/pcl/sample_consensus/impl/sac_model_registration.hpp
  /usr/include/pcl-1.10/pcl/sample_consensus/model_types.h
  /usr/include/pcl-1.10/pcl/sample_consensus/ransac.h
  /usr/include/pcl-1.10/pcl/sample_consensus/sac.h
  /usr/include/pcl-1.10/pcl/sample_consensus/sac_model.h
+ /usr/include/pcl-1.10/pcl/sample_consensus/sac_model_plane.h
  /usr/include/pcl-1.10/pcl/sample_consensus/sac_model_registration.h
  /usr/include/pcl-1.10/pcl/search/impl/kdtree.hpp
  /usr/include/pcl-1.10/pcl/search/impl/organized.hpp
