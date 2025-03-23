@@ -38,9 +38,11 @@ void callback(const pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr& msg)
 
 	cout << "Puntos tras VG: " << cloud_filtered->size() << endl;
 
-	pcl::io::savePCDFileASCII("cloud_filtered" + std::to_string(i) +".pcd", *cloud_filtered);
+	std::string filename = "cloud_filtered" + std::to_string(i) +".pcd";
+
+	pcl::io::savePCDFileASCII(filename, *cloud_filtered);
 	i++;
-    std::cout << "La nube de puntos pasada por vg ha sido guardada en 'cloud_filtered.pcd'" << std::endl;
+    std::cout << "La nube de puntos pasada por vg ha sido guardada en '"+filename+"'" << std::endl;
 
 	visu_pc = cloud_filtered;
 }
