@@ -33,4 +33,5 @@
 
 # Project Files
 *.pcd
-devel
+catkin_ws/devel
+catkin_ws/build

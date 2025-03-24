@@ -4,5 +4,6 @@
         "iostream": "cpp",
         "core": "cpp",
         "numericaldiff": "cpp"
-    }
+    },
+    "cmake.ignoreCMakeListsMissing": true
 }

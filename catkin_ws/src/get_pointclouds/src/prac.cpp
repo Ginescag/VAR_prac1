@@ -25,6 +25,10 @@
 
 int main(int argc, char** argv) {
 	ros::init(argc, argv, "sub_prac");
+	ros::NodeHandle nh;
+
+    // Crear publicador para el tópico "/mapa_global"
+    ros::Publisher pub_mapa = nh.advertise<sensor_msgs::PointCloud2>("/mapa_global", 1);
 
 	pcl::PointCloud<pcl::PointXYZRGB>::Ptr mapa_global(new pcl::PointCloud<pcl::PointXYZRGB>);
 	Eigen::Matrix4f TT = Eigen::Matrix4f::Identity();
@@ -136,7 +140,12 @@ int main(int argc, char** argv) {
 
 				TT = TT * transformacion_actual;
 
+				pcl::PointCloud<pcl::PointXYZRGB>::Ptr nube_registrada(new pcl::PointCloud<pcl::PointXYZRGB>);
 				
+				pcl::transformPointCloud(*cloud_filtered, *nube_registrada, TT);
+
+				// e. Fusionar con el mapa global
+				*mapa_global += *nube_registrada;
 				// 1. Crear objeto de estimación SVD
 				// pcl::registration::TransformationEstimationSVD<pcl::PointXYZRGB, pcl::PointXYZRGB> svd;
 
@@ -153,6 +162,10 @@ int main(int argc, char** argv) {
 			}
 
 		}
+		sensor_msgs::PointCloud2 mensaje_ros;
+		pcl::toROSMsg(*mapa_global, mensaje_ros);
+		mensaje_ros.header.frame_id = "map";
+		pub_mapa.publish(mensaje_ros);
 
 	// 	// 4. Realizar la alineación de nubes de puntos utilizando RANSAC
     //     if (i > 0) {
