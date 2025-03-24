@@ -2420,6 +2420,14 @@ functional
 pcl/features/impl/feature.hpp
 -
 
+/usr/include/pcl-1.10/pcl/features/fpfh.h
+pcl/features/feature.h
+-
+set
+-
+pcl/features/impl/fpfh.hpp
+-
+
 /usr/include/pcl-1.10/pcl/features/impl/boundary.hpp
 pcl/features/boundary.h
 -
@@ -2428,6 +2436,12 @@ cfloat
 
 /usr/include/pcl-1.10/pcl/features/impl/feature.hpp
 pcl/search/pcl_search.h
+-
+
+/usr/include/pcl-1.10/pcl/features/impl/fpfh.hpp
+pcl/features/fpfh.h
+-
+pcl/features/pfh_tools.h
 -
 
 /usr/include/pcl-1.10/pcl/features/impl/integral_image2D.hpp
@@ -2472,6 +2486,12 @@ pcl/features/feature.h
 pcl/common/centroid.h
 -
 pcl/features/impl/normal_3d.hpp
+-
+
+/usr/include/pcl-1.10/pcl/features/pfh_tools.h
+pcl/pcl_exports.h
+-
+Eigen/Core
 -
 
 /usr/include/pcl-1.10/pcl/filters/boost.h
@@ -3148,6 +3168,20 @@ pcl/point_cloud.h
 pcl/search/kdtree.h
 -
 
+/usr/include/pcl-1.10/pcl/registration/correspondence_rejection_sample_consensus.h
+pcl/pcl_macros.h
+-
+pcl/registration/correspondence_rejection.h
+-
+pcl/sample_consensus/ransac.h
+-
+pcl/sample_consensus/sac_model_registration.h
+-
+pcl/common/transforms.h
+-
+pcl/registration/impl/correspondence_rejection_sample_consensus.hpp
+-
+
 /usr/include/pcl-1.10/pcl/registration/correspondence_sorting.h
 pcl/registration/correspondence_types.h
 -
@@ -3218,6 +3252,10 @@ pcl/registration/impl/icp.hpp
 pcl/common/io.h
 -
 pcl/common/copy_point.h
+-
+
+/usr/include/pcl-1.10/pcl/registration/impl/correspondence_rejection_sample_consensus.hpp
+unordered_map
 -
 
 /usr/include/pcl-1.10/pcl/registration/impl/correspondence_types.hpp
@@ -4633,8 +4671,18 @@ pcl/sample_consensus/sac_model_plane.h
 -
 pcl/common/transforms.h
 -
+pcl/features/fpfh.h
+-
 pcl/common/centroid.h
 -
 pcl/common/eigen.h
+-
+pcl/features/normal_3d.h
+-
+pcl/registration/correspondence_estimation.h
+-
+pcl/registration/correspondence_rejection_sample_consensus.h
+-
+pcl/registration/transformation_estimation_svd.h
 -
 

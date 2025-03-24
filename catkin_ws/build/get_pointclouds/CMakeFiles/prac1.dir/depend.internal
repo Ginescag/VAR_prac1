@@ -335,14 +335,17 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/features/boundary.h
  /usr/include/pcl-1.10/pcl/features/eigen.h
  /usr/include/pcl-1.10/pcl/features/feature.h
+ /usr/include/pcl-1.10/pcl/features/fpfh.h
  /usr/include/pcl-1.10/pcl/features/impl/boundary.hpp
  /usr/include/pcl-1.10/pcl/features/impl/feature.hpp
+ /usr/include/pcl-1.10/pcl/features/impl/fpfh.hpp
  /usr/include/pcl-1.10/pcl/features/impl/integral_image2D.hpp
  /usr/include/pcl-1.10/pcl/features/impl/integral_image_normal.hpp
  /usr/include/pcl-1.10/pcl/features/impl/normal_3d.hpp
  /usr/include/pcl-1.10/pcl/features/integral_image2D.h
  /usr/include/pcl-1.10/pcl/features/integral_image_normal.h
  /usr/include/pcl-1.10/pcl/features/normal_3d.h
+ /usr/include/pcl-1.10/pcl/features/pfh_tools.h
  /usr/include/pcl-1.10/pcl/filters/boost.h
  /usr/include/pcl-1.10/pcl/filters/extract_indices.h
  /usr/include/pcl-1.10/pcl/filters/filter.h
@@ -403,6 +406,7 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/registration/convergence_criteria.h
  /usr/include/pcl-1.10/pcl/registration/correspondence_estimation.h
  /usr/include/pcl-1.10/pcl/registration/correspondence_rejection.h
+ /usr/include/pcl-1.10/pcl/registration/correspondence_rejection_sample_consensus.h
  /usr/include/pcl-1.10/pcl/registration/correspondence_sorting.h
  /usr/include/pcl-1.10/pcl/registration/correspondence_types.h
  /usr/include/pcl-1.10/pcl/registration/default_convergence_criteria.h
@@ -411,6 +415,7 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
  /usr/include/pcl-1.10/pcl/registration/gicp.h
  /usr/include/pcl-1.10/pcl/registration/icp.h
  /usr/include/pcl-1.10/pcl/registration/impl/correspondence_estimation.hpp
+ /usr/include/pcl-1.10/pcl/registration/impl/correspondence_rejection_sample_consensus.hpp
  /usr/include/pcl-1.10/pcl/registration/impl/correspondence_types.hpp
  /usr/include/pcl-1.10/pcl/registration/impl/default_convergence_criteria.hpp
  /usr/include/pcl-1.10/pcl/registration/impl/gicp.hpp

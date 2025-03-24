@@ -334,14 +334,17 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/e
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/boundary.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/eigen.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/feature.h
+get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/fpfh.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/boundary.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/feature.hpp
+get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/fpfh.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/integral_image2D.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/integral_image_normal.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/impl/normal_3d.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/integral_image2D.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/integral_image_normal.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/normal_3d.h
+get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/features/pfh_tools.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/filters/boost.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/filters/extract_indices.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/filters/filter.h
@@ -402,6 +405,7 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/r
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/convergence_criteria.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/correspondence_estimation.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/correspondence_rejection.h
+get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/correspondence_rejection_sample_consensus.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/correspondence_sorting.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/correspondence_types.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/default_convergence_criteria.h
@@ -410,6 +414,7 @@ get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/r
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/gicp.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/icp.h
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/impl/correspondence_estimation.hpp
+get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/impl/correspondence_rejection_sample_consensus.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/impl/correspondence_types.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/impl/default_convergence_criteria.hpp
 get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o: /usr/include/pcl-1.10/pcl/registration/impl/gicp.hpp
