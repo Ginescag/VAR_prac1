@@ -139,7 +139,8 @@ int main(int argc, char** argv) {
 				Eigen::Matrix4f transformacion_actual = ransac_filter.getBestTransformation();
 
 				TT = TT * transformacion_actual;
-
+                cout << "Transformación actual: " << endl << transformacion_actual << endl;
+                cout << "Transformación acumulada: " << endl << TT << endl;
 				pcl::PointCloud<pcl::PointXYZRGB>::Ptr nube_registrada(new pcl::PointCloud<pcl::PointXYZRGB>);
 				
 				pcl::transformPointCloud(*cloud_filtered, *nube_registrada, TT);
@@ -162,10 +163,10 @@ int main(int argc, char** argv) {
 			}
 
 		}
-		sensor_msgs::PointCloud2 mensaje_ros;
-		pcl::toROSMsg(*mapa_global, mensaje_ros);
-		mensaje_ros.header.frame_id = "map";
-		pub_mapa.publish(mensaje_ros);
+		//sensor_msgs::PointCloud2 mensaje_ros;
+		// pcl::toROSMsg(*mapa_global, mensaje_ros);
+		// mensaje_ros.header.frame_id = "map";
+		// pub_mapa.publish(mensaje_ros);
 
 	// 	// 4. Realizar la alineación de nubes de puntos utilizando RANSAC
     //     if (i > 0) {
@@ -239,16 +240,16 @@ int main(int argc, char** argv) {
     //     }
 	}
 	// Al final, el mapa M tiene la nube de puntos alineada acumulada
-    // std::cout << "Tamaño de la nube de puntos alineada: " << prev_cloud->size() << std::endl;
+    std::cout << "Tamaño de la nube de puntos alineada: " << mapa_global->size() << std::endl;
 
-	// // Visualizar el mapa final
-    // pcl::visualization::PCLVisualizer viewer("Mapa Alineado");
-    // viewer.addPointCloud(prev_cloud, "cloud");  // Agregar la nube de puntos al visor
-    // viewer.setBackgroundColor(0, 0, 0);  // Fondo negro
-    // viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");  // Establecer el tamaño de los puntos
-    // while (!viewer.wasStopped()) {
-    //     viewer.spinOnce();
-    // }
+	// Visualizar el mapa final
+    pcl::visualization::PCLVisualizer viewer("Mapa Alineado");
+    viewer.addPointCloud(mapa_global, "cloud");  // Agregar la nube de puntos al visor
+    viewer.setBackgroundColor(0, 0, 0);  // Fondo negro
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "cloud");  // Establecer el tamaño de los puntos
+    while (!viewer.wasStopped()) {
+        viewer.spinOnce();
+    }
 
     return 0;
 }
