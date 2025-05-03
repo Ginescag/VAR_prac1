@@ -31,7 +31,8 @@ RUN sudo apt install -y ros-noetic-gazebo-ros-pkgs
 
 # Rosdep update
 RUN sudo rosdep update
-
+RUN pip install deap
+RUN export TURTLEBOT3_MODEL=waffle
 # Source the ROS setup file
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
 
