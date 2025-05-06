@@ -1,0 +1,13 @@
+<launch>
+    <!-- Cargar parámetros -->
+    <rosparam command="load" file="$(find genetic_nav)/config/checkpoints.yaml" />
+    <rosparam command="load" file="$(find genetic_nav)/config/params.yaml" />
+
+    <!-- Iniciar Gazebo con el mundo del TurtleBot3 -->
+    <arg name="world_name" value="$(find turtlebot_gazebo_multiple)/launch/race.sdf"/> 
+
+    <!-- Nodos personalizados -->
+    <node pkg="genetic_nav" type="trajectory_controller.py" name="trajectory_controller" output="screen" />
+    <node pkg="genetic_nav" type="collision_checker.py" name="collision_checker" output="screen" />
+    <node pkg="genetic_nav" type="genetic_algorithm.py" name="genetic_algorithm" output="screen" />
+</launch>
