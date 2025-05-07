@@ -3,12 +3,13 @@ import rospy
 import random
 import yaml
 import numpy as np
+import tensorflow as tf
 from deap import base, creator, tools, algorithms
 from geometry_msgs.msg import Point
 from std_msgs.msg import Bool
 
 def random_coord():
-    return (random.uniform(-5.0, 5.0), random.uniform(-5.0, 5.0))
+    return random.uniform(-5.0, 5.0)
 
 # Cargar parámetros desde ROS
 params = rospy.get_param("/genetic_algorithm")
@@ -24,8 +25,8 @@ creator.create("FitnessMax", base.Fitness, weights=(1.0, -0.1, -0.5))
 creator.create("Individual", list, fitness=creator.FitnessMax)
 
 toolbox = base.Toolbox()
-toolbox.register("attr_coord", random_coord)  # Genera tuplas (x,y)
-toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_coord, n=GENOME_LENGTH//2)  # n = número de coordenadas
+toolbox.register("attr_params", random_coord)  # Genera tuplas (x,y)
+toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_params, n=GENOME_LENGTH)  # n = número de coordenadas
 toolbox.register("population", tools.initRepeat, list, toolbox.individual)
 
 # 4. Operadores genéticos (ejemplo)
@@ -39,7 +40,7 @@ def evaluate(individual):
     """Evalúa un genoma publicando sus coordenadas y midiendo el desempeño."""
     rospy.set_param("/simulation_done", False)
     # Publicar cada coordenada del genoma
-    for x, y in individual:
+    for x in individual:
         traj_pub.publish(Point(x, y, 0))
         rospy.sleep(0.1)  # Esperar a que el controlador procese
     
@@ -51,18 +52,16 @@ def evaluate(individual):
     
     # Obtener métricas
     checkpoints = rospy.get_param("/checkpoints_reached", 0)
-    time_elapsed = rospy.get_param("/time_elapsed", MAX_TIME)
     collision = rospy.get_param("/collision_occurred", False)
-    fitness = (checkpoints * 100) - (time_elapsed * 1) - (collision * 50)
+    fitness = (checkpoints * 100) - (collision * 50)
     # Nueva línea de impresión (añade esto al final, antes del return)
     
     rospy.loginfo(f"\n► Genoma evaluado: {individual}\n\
                 ► Fitness: {fitness:.2f}\n\
                 ► Checkpoints: {checkpoints}/{len(CHECKPOINTS)}\n\
-                ► Tiempo: {time_elapsed:.2f}s\n\
                 ► Colisión: {'Sí' if collision else 'No'}")
     
-    return (checkpoints, time_elapsed, int(collision))
+    return (checkpoints, int(collision))
 
 def mutCustomGaussian(individual, mu=0, sigma=0.5, indpb=0.1):
     for i in range(len(individual)):
