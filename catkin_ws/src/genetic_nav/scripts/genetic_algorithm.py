@@ -3,6 +3,7 @@ import random
 import numpy as np
 import yaml
 from rocon_std_msgs.msg import StringArray
+from genetic_nav.msg import Weights
 
 # Cargar parámetros desde ROS
 params = rospy.get_param("/genetic_algorithm")
@@ -36,29 +37,31 @@ def evaluate(individual):
     fitness = calculate_fitness()
     return (fitness,)
 
-def custom_mutate(p1, p2):
+def mutate(p1, p2):
     return p1
-
-# toolbox.register("mate", tools.cxTwoPoint) # Crossover
-# toolbox.register("mutate", tools.mutFlipBit, indpb=0.1) # Mutacion
-# toolbox.register("select", tools.selTournament, tournsize=3) # Selecion
-# toolbox.register("evaluate", evaluate) # Evaluacion
 
 if __name__ == '__main__':
     rospy.init_node("genetic_algorithm")
     rospy.loginfo("Starting the Genetic ALgorithm")
-    pub = rospy.Publisher('chromosomes', StringArray)
+    pub = rospy.Publisher('chromosomes', Weights)
 
-    population = [[str(random.randint(64, 256)), #Dimension código latente
-                   str(random.randint(32, 128)), #Anchura de las capas
-                   str(random.uniform(0,0.5)),   #Dropout
-                   str(random.randint(16, 32))]  #Tamaño grid decoder
+    population = [[str(random.randint(64, 256)), #Anchura de la capa
+                   str(random.uniform(0,0.5)),   #Pesos
+                   str(random.randint(16, 32))]  #Bias
+                   for i in range(POP_SIZE)]
+    
+    population = [[[random.uniform(-0.5,0.5) for i in range(GENOME_LENGTH)], 
+                   [random.uniform(0.0,0.1) for i in range(GENOME_LENGTH)]] 
                    for i in range(POP_SIZE)]
 
     # record = stats.compile(population)
     for gen in range(NUM_GENERATIONS):
         for pop in population:
-            pub.publish(pop)
+            pop_pub = Weights()
+            pop_pub.pesos = pop[0]
+            pop_pub.bias = pop[1]
+            pub.publish(pop_pub)
+            rospy.wait
             
         # offspring = toolbox.select(populsation, len(population))
         
