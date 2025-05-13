@@ -4,55 +4,44 @@ from geometry_msgs.msg import Point, Twist
 from nav_msgs.msg import Odometry
 from tf.transformations import euler_from_quaternion
 import numpy as np
+from tensorflow import keras
+from rocon_std_msgs.msg import StringArray
+from sensor_msgs.msg import PointCloud2
+import PointNet
+
+CHECKPOINTS = rospy.get_param("/checkpoints")  # Checkpoints del circuito
+
 
 class TrajectoryController:
     def __init__(self):
         rospy.init_node("trajectory_controller")
-        self.target = None                       # Coordenada objetivo actual
-        self.current_pose = None                 # Pose actual del robot (x, y, theta)
-        self.velocity_pub = rospy.Publisher("/cmd_vel", Twist, queue_size=10)
+        self.prev_pose = None
+        self.current_pose = (0.0, 0.0, 90.0)
         self.odom_sub = rospy.Subscriber("/odom", Odometry, self.odom_callback)
-        self.trajectory_sub = rospy.Subscriber("/target_trajectory", Point, self.trajectory_callback)
+        self.chromosomes_sub = rospy.Subscriber("chromosomes", StringArray, self.chromosomes_callback)
+        self.lidar_sub = rospy.Subscriber("/scan", )
         
     def odom_callback(self, msg):
         """Actualiza la pose actual del robot desde la odometría."""
+        self.prev_pose = self.current_pose
+        
         x = msg.pose.pose.position.x
         y = msg.pose.pose.position.y
         q = msg.pose.pose.orientation
         _, _, theta = euler_from_quaternion([q.x, q.y, q.z, q.w])
+        rospy.loginfo(f"X: {x}, Y: {y}, Theta: {theta}")
         self.current_pose = (x, y, theta)
     
-    def trajectory_callback(self, msg):
+    def chromosomes_callback(self, msg):
         """Recibe una nueva coordenada objetivo y comienza a seguirla."""
-        self.target = (msg.x, msg.y)
-        self.follow_target()
+        dim_lat, anchura_ini, dropout, grid_decod = int(msg[0]), int(msg[1]), float(msg[2]), int(msg[3])
+
+        self.follow_target(dim_lat, anchura_ini, dropout, grid_decod)
     
-    def follow_target(self):
+    def follow_target(self, dim_lat, anchura_ini, droput, grid_decod):
         """Controlador PID para moverse hacia la coordenada objetivo."""
-        rate = rospy.Rate(10)  # 10 Hz
-        while self.target and not rospy.is_shutdown():
-            if self.current_pose is None:
-                continue  # Esperar primera actualización de odometría
-            
-            dx = self.target[0] - self.current_pose[0]
-            dy = self.target[1] - self.current_pose[1]
-            distance = np.hypot(dx, dy)
-            angle_to_target = np.arctan2(dy, dx)
-            angle_error = angle_to_target - self.current_pose[2]
-            
-            # Controlador proporcional
-            v = min(0.5 * distance, 0.5)  # Velocidad lineal máxima 0.5 m/s
-            w = 1.5 * angle_error         # Ganancia angular
-            
-            twist = Twist()
-            twist.linear.x = v
-            twist.angular.z = w
-            self.velocity_pub.publish(twist)
-            
-            if distance < 0.1:  # Umbral de llegada (10 cm)
-                break
-            rate.sleep()
+        pn = PointNet.create_autoencoder(dim_lat )
+        
 
 if __name__ == "__main__":
     controller = TrajectoryController()
-    rospy.spin()
