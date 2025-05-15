@@ -8,6 +8,5 @@
 
     <!-- Nodos personalizados -->
     <node pkg="genetic_nav" type="trajectory_controller.py" name="trajectory_controller" output="screen" />
-    <node pkg="genetic_nav" type="collision_checker.py" name="collision_checker" output="screen" />
     <node pkg="genetic_nav" type="genetic_algorithm.py" name="genetic_algorithm" output="screen" />
 </launch>

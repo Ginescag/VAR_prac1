@@ -1,20 +1,29 @@
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras import layers
+import numpy as np
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Dense
 
-# Definir el autoencoder
-def create_autoencoder(num_points=1024):
-    inputs = keras.Input(shape=(num_points, 3))
-    x = layers.Conv1D(64, 1, activation='relu')(inputs)
-    x = layers.Conv1D(128, 1, activation='relu')(x)
-    x = layers.GlobalMaxPooling1D()(x)
-    encoded = layers.Dense(256, activation='relu')(x)
+def build_model_estandar(weights_list, biases_list):
+    """
+    Crea una red neuronal con arquitectura fija:
+        Input(5) → Dense(16, ReLU) → Dense(8, ReLU) → Dense(3, Softmax)
 
-    x = layers.Dense(1024, activation='relu')(encoded)
-    x = layers.Reshape((num_points, 1))(x)
-    x = layers.Conv1DTranspose(128, 1, activation='relu')(x)
-    x = layers.Conv1DTranspose(64, 1, activation='relu')(x)
-    decoded = layers.Conv1DTranspose(3, 1)(x)
+    Parámetros:
+    - weights_list: lista de 3 arrays NumPy con los pesos (shape: [(5,16), (16,8), (8,3)])
+    - biases_list:  lista de 3 arrays NumPy con los bias   (shape: [(16,), (8,), (3,)])
 
-    autoencoder = keras.Model(inputs, decoded)
-    return autoencoder
+    Retorna:
+    - modelo Keras listo para usar
+    """
+    x_in = Input(shape=(5,), name='input_layer')
+    
+    x = Dense(16, activation='relu', name='dense_0')(x_in)
+    x = Dense(8, activation='relu', name='dense_1')(x)
+    x = Dense(3, activation='softmax', name='dense_2')(x)
+
+    model = Model(inputs=x_in, outputs=x, name='modelo_estandar')
+
+    # Asignar pesos y sesgos manualmente
+    for i, layer in enumerate(model.layers[1:]):  # Omitimos input_layer
+        layer.set_weights([weights_list[i], biases_list[i]])
+
+    return model
