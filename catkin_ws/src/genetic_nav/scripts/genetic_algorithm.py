@@ -13,7 +13,8 @@ from geometry_msgs.msg import Pose, Twist, Point, Quaternion
 # Cargar parámetros desde ROS
 params = rospy.get_param("/genetic_algorithm")
 POP_SIZE        = params["pop_size"]          # tamaño de población
-GENOME_LENGTH   = params["genome_length"]     # longitud del genoma
+GENOME_WEIGHT_LENGTH   = params["genome_weight_length"]     # longitud de LOS PESOS del genoma
+GENOME_BIAS_LENGTH     = params["genome_bias_length"]       # longitud de LOS BIAS del genoma
 MUT_PROB        = params["mut_prob"]          # prob. de mutación
 CX_PROB         = params["cx_prob"]           # prob. de cruce
 NUM_GENERATIONS = params["num_gen"]            # iteraciones del GA
@@ -37,11 +38,19 @@ def get_state(model, reference="world"):
         rospy.logerr("Fallo en /gazebo/get_model_state: %s", e)
         return None, None
 
-def seleccion_por_torneo(poblacion, fitness_fn, k=3):
+# def seleccion_por_torneo(poblacion, fitness_fn, k=3):
+#     """Selecciona un individuo usando torneo de tamaño k."""
+#     participantes = random.sample(poblacion, k)
+#     mejor = max(participantes, key=fitness_fn)
+#     return mejor
+
+def seleccion_por_torneo(poblacion, fitnesses, k=3):
     """Selecciona un individuo usando torneo de tamaño k."""
-    participantes = random.sample(poblacion, k)
-    mejor = max(participantes, key=fitness_fn)
-    return mejor
+    # Get k random indices
+    indices = random.sample(range(len(poblacion)), k)
+    # Find the index with maximum fitness
+    mejor_idx = max(indices, key=lambda i: fitnesses[i])
+    return poblacion[mejor_idx]
 
 
 
@@ -83,12 +92,12 @@ def start_again(reset_world, set_model_state, initial_state):
 
 if __name__ == '__main__':
     rospy.init_node("genetic_algorithm")
-    pub = rospy.Publisher('chromosomes', Weights, queue_size=10)
+    pub = rospy.Publisher('chromosomes', Weights, queue_size=10, latch=True)
     reset_world = rospy.ServiceProxy('/gazebo/reset_world', Empty)
     rospy.loginfo("Topico genetico creado")
     population = [[
-                    [random.uniform(-0.5,0.5) for i in range(GENOME_LENGTH)], 
-                    [random.uniform(0.0,0.1) for i in range(GENOME_LENGTH)]] 
+                    [random.uniform(-0.5,0.5) for i in range(GENOME_WEIGHT_LENGTH)], 
+                    [random.uniform(0.0,0.1) for i in range(GENOME_BIAS_LENGTH)]] 
                    for i in range(POP_SIZE)]
     rospy.loginfo("Población creada")
     # Proxies para estados
@@ -111,7 +120,10 @@ if __name__ == '__main__':
     for gen in range(NUM_GENERATIONS):
         rospy.loginfo(f"Generación {gen}")
         fitnesses = []
+        i = 0
         for ind in population:
+            i += 1
+            print(f"individuo n {i} de la generación {gen}")
             pop_pub = Weights()
             pop_pub.pesos = ind[0]
             pop_pub.bias = ind[1]

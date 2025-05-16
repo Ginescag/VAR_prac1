@@ -28,9 +28,9 @@ class TrajectoryController:
     def obtener_lidar(self):
         #Obtención del escaneo del LIDAR
 
-        lidar = rospy.wait_for_message("/scan", LaserScan)
+        scan = rospy.wait_for_message("/scan", LaserScan)
         rospy.loginfo("Lidar obtenido")
-        lidar = np.array(lidar)
+        lidar = np.array(scan.ranges, dtype=np.float64)
         lidar[np.isinf(lidar)] = MAX_LIDAR_DIST
 
         if len(lidar) >= NUM_LIDAR_POINTS:
@@ -69,7 +69,14 @@ class TrajectoryController:
         return twist
     
     def in_between(self, p1, p2):
-        x, y = CHECKPOINTS[self.current_checkpoint]
+        checkpoint = CHECKPOINTS[self.current_checkpoint]
+        if isinstance(checkpoint,dict):
+            x = float(checkpoint["x"])
+            y = float(checkpoint["y"])
+        else:
+            x = float(checkpoint[0])
+            y = float(checkpoint[1])
+
         x1, y1 = p1
         x2, y2 = p2
 
@@ -88,9 +95,12 @@ class TrajectoryController:
             rospy.loginfo("Han llegado los cromosomas")
 
             self.current_checkpoint = 0
-            pesos = msg.pesos
-            bias = msg.bias
-            model = NeuralNetowrk.build_model_estandar(pesos, bias)
+            pesos_flat = msg.pesos
+            bias_flat = msg.bias
+
+            pesos_list, bias_list = NeuralNetowrk.reconstruir_listas(pesos_flat, bias_flat)
+            
+            model = NeuralNetowrk.build_model_estandar(pesos_list, bias_list)
             x, y = self.obtener_posicion()
             crash = 0
             r = rospy.Rate(10)
@@ -98,7 +108,7 @@ class TrajectoryController:
             while self.current_checkpoint < len(CHECKPOINTS):
                 #Repetir hasta que choque o llegue al último checkpoint
                 lidar_i, lidar_c, lidar_d = self.obtener_lidar()
-                entrada = [x, y, lidar_i, lidar_c, lidar_d]
+                entrada = np.array([[x, y, lidar_i, lidar_c, lidar_d]], dtype=np.float32)
 
                 #Obtener la predicción
                 salida = model.predict(entrada)

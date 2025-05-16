@@ -2,6 +2,26 @@ import numpy as np
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Dense
 
+def reconstruir_listas(pesos_flat, bias_flat):
+    """Convierte dos listas planas en las listas que Keras espera."""
+    import numpy as np
+
+    pesos_flat = np.asarray(pesos_flat, dtype=np.float32)
+    bias_flat  = np.asarray(bias_flat,  dtype=np.float32)
+
+    # ----- pesos -----
+    w0 = pesos_flat[0:80   ].reshape(5, 16)
+    w1 = pesos_flat[80:208].reshape(16, 8)
+    w2 = pesos_flat[208:232].reshape(8, 3)
+
+    # ----- bias  -----
+    b0 = bias_flat[0:16]
+    b1 = bias_flat[16:24]
+    b2 = bias_flat[24:27]
+
+    return [w0, w1, w2], [b0, b1, b2]
+
+
 def build_model_estandar(weights_list, biases_list):
     """
     Crea una red neuronal con arquitectura fija:

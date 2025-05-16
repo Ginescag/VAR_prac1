@@ -118,6 +118,21 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
+   "/workspace/catkin_ws/install/setup.fish;/workspace/catkin_ws/install/local_setup.fish")
+  if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+  if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
+    message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
+  endif()
+file(INSTALL DESTINATION "/workspace/catkin_ws/install" TYPE FILE FILES
+    "/workspace/catkin_ws/build/catkin_generated/installspace/setup.fish"
+    "/workspace/catkin_ws/build/catkin_generated/installspace/local_setup.fish"
+    )
+endif()
+
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
    "/workspace/catkin_ws/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
@@ -138,6 +153,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/workspace/catkin_ws/build/turtlebot3/turtlebot3_navigation/cmake_install.cmake")
   include("/workspace/catkin_ws/build/turtlebot3_simulations/turtlebot3_simulations/cmake_install.cmake")
   include("/workspace/catkin_ws/build/turtlebot_gazebo_multiple/cmake_install.cmake")
+  include("/workspace/catkin_ws/build/genetic_nav/cmake_install.cmake")
   include("/workspace/catkin_ws/build/teleop_twist_keyboard/cmake_install.cmake")
   include("/workspace/catkin_ws/build/listener/cmake_install.cmake")
   include("/workspace/catkin_ws/build/get_pointclouds/cmake_install.cmake")

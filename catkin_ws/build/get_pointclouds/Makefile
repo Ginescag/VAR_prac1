@@ -80,18 +80,6 @@ install/local/fast: preinstall/fast
 	/usr/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
 .PHONY : install/local/fast
 
-# Special rule for the target install
-install: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install
-
-# Special rule for the target install
-install/fast: preinstall/fast
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
-	/usr/bin/cmake -P cmake_install.cmake
-.PHONY : install/fast
-
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "No interactive CMake dialog available..."
@@ -134,6 +122,18 @@ list_install_components:
 list_install_components/fast: list_install_components
 
 .PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Install the project..."
+	/usr/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -977,21 +977,6 @@ tf2_msgs_generate_messages_py/fast:
 	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/tf2_msgs_generate_messages_py.dir/build.make get_pointclouds/CMakeFiles/tf2_msgs_generate_messages_py.dir/build
 .PHONY : tf2_msgs_generate_messages_py/fast
 
-# Convenience name for target.
-get_pointclouds/CMakeFiles/prac1.dir/rule:
-	cd /workspace/catkin_ws/build && $(MAKE) -f CMakeFiles/Makefile2 get_pointclouds/CMakeFiles/prac1.dir/rule
-.PHONY : get_pointclouds/CMakeFiles/prac1.dir/rule
-
-# Convenience name for target.
-prac1: get_pointclouds/CMakeFiles/prac1.dir/rule
-
-.PHONY : prac1
-
-# fast build rule for target.
-prac1/fast:
-	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/prac1.dir/build.make get_pointclouds/CMakeFiles/prac1.dir/build
-.PHONY : prac1/fast
-
 src/node.o: src/node.cpp.o
 
 .PHONY : src/node.o
@@ -1019,33 +1004,6 @@ src/node.cpp.s:
 	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/get_pointclouds_node.dir/build.make get_pointclouds/CMakeFiles/get_pointclouds_node.dir/src/node.cpp.s
 .PHONY : src/node.cpp.s
 
-src/prac.o: src/prac.cpp.o
-
-.PHONY : src/prac.o
-
-# target to build an object file
-src/prac.cpp.o:
-	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/prac1.dir/build.make get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.o
-.PHONY : src/prac.cpp.o
-
-src/prac.i: src/prac.cpp.i
-
-.PHONY : src/prac.i
-
-# target to preprocess a source file
-src/prac.cpp.i:
-	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/prac1.dir/build.make get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.i
-.PHONY : src/prac.cpp.i
-
-src/prac.s: src/prac.cpp.s
-
-.PHONY : src/prac.s
-
-# target to generate assembly for a file
-src/prac.cpp.s:
-	cd /workspace/catkin_ws/build && $(MAKE) -f get_pointclouds/CMakeFiles/prac1.dir/build.make get_pointclouds/CMakeFiles/prac1.dir/src/prac.cpp.s
-.PHONY : src/prac.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1054,7 +1012,6 @@ help:
 	@echo "... depend"
 	@echo "... install/strip"
 	@echo "... install/local"
-	@echo "... install"
 	@echo "... std_srvs_generate_messages_py"
 	@echo "... std_srvs_generate_messages_eus"
 	@echo "... nodelet_topic_tools_gencfg"
@@ -1112,14 +1069,11 @@ help:
 	@echo "... dynamic_reconfigure_generate_messages_nodejs"
 	@echo "... bond_generate_messages_cpp"
 	@echo "... tf2_msgs_generate_messages_py"
-	@echo "... prac1"
 	@echo "... list_install_components"
+	@echo "... install"
 	@echo "... src/node.o"
 	@echo "... src/node.i"
 	@echo "... src/node.s"
-	@echo "... src/prac.o"
-	@echo "... src/prac.i"
-	@echo "... src/prac.s"
 .PHONY : help
 
 
