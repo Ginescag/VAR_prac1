@@ -4,8 +4,7 @@ import random
 import numpy as np
 from genetic_nav.msg import Weights
 from std_srvs.srv import Empty
-from std_msgs.msg import Int32MultiArray
-from nav_msgs.msg import Odometry
+from std_msgs.msg import Int32MultiArray, Float32
 from gazebo_msgs.srv import GetModelState, SetModelState
 from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import Pose, Twist, Point, Quaternion
@@ -127,15 +126,62 @@ def start_again(reset_world, set_model_state, initial_state):
         rospy.logerr("Fallo en /gazebo/set_model_state: %s", e)
 
 
+def export_chromosome(p):
+    try:
+        file = open("bestChromosome", "x")
+    except:
+        file = open("bestChromosome", "w")
+    for w in p[0]:
+        file.write(f"{w} ")
+    file.write('\n')
+    for b in p[1]:
+        file.write(f"{b} ")
+    
+
+def import_chromosome():
+    try:
+        file = open("bestChromosome", 'r')
+        chromosome = []
+        weights = []
+        biases = []
+        i = 0
+        for line in file:
+            line = line.split(' ')
+            if i == 0:
+                for w in line:
+                    if w != '':
+                        weights.append(float(w))
+                i = i + 1
+            else:
+                for b in line:
+                    if b != '':
+                        biases.append(float(b))
+        chromosome.append(weights)
+        chromosome.append(biases)
+        return chromosome
+    except:
+        return None
+
 if __name__ == '__main__':
     rospy.init_node("genetic_algorithm")
     pub = rospy.Publisher('chromosomes', Weights, queue_size=10, latch=True)
+    plot_pub = rospy.Publisher('fitness', Float32, queue_size=10, latch=True)
     reset_world = rospy.ServiceProxy('/gazebo/reset_world', Empty)
     rospy.loginfo("Topico genetico creado")
-    population = [[
-                    [random.uniform(-0.5,0.5) for i in range(GENOME_WEIGHT_LENGTH)], 
-                    [random.uniform(0.0,0.1) for i in range(GENOME_BIAS_LENGTH)]] 
-                   for i in range(POP_SIZE)]
+
+    lastBest = import_chromosome()
+    if lastBest == None:
+        population = [[
+                        [random.uniform(-0.5,0.5) for i in range(GENOME_WEIGHT_LENGTH)], 
+                        [random.uniform(0.0,0.1) for i in range(GENOME_BIAS_LENGTH)]] 
+                       for i in range(POP_SIZE)]
+    else:
+        population = [[
+                        [random.uniform(-0.5,0.5) for i in range(GENOME_WEIGHT_LENGTH)], 
+                        [random.uniform(0.0,0.1) for i in range(GENOME_BIAS_LENGTH)]] 
+                       for i in range(POP_SIZE - 1)]
+        population.append(lastBest)
+
     rospy.loginfo("Población creada")
     # Proxies para estados
     rospy.wait_for_service('/gazebo/get_model_state')
@@ -145,7 +191,7 @@ if __name__ == '__main__':
 
     # Definir estado inicial del robot
     initial_state = ModelState()
-    initial_state.model_name = 'turtlebot3_waffle'
+    initial_state.model_name = 'turtlebot3'
     initial_state.pose = Pose(
         position=Point(x=-6.5, y=8.5, z=0.0),
         orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
@@ -183,12 +229,17 @@ if __name__ == '__main__':
 
         # Add after calculating fitnesses for the generation
         rospy.loginfo('Mejor fitness gen %d: %.2f', gen, max(fitnesses))
+      
+        msg = Float32()
+        msg.data = max(fitnesses)
+        plot_pub.publish(msg)
 
         # Selección y generación siguiente
         new_pop = []
         # Elitismo
         elite_idx = int(np.argmax(fitnesses))
         new_pop.append(population[elite_idx])
+        export_chromosome(population[elite_idx])
 
         while len(new_pop) < POP_SIZE:
             p1 = seleccion_por_torneo(population, fitnesses, 5)

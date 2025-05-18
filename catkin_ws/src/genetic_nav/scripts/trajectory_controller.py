@@ -14,7 +14,7 @@ import random
 CHECKPOINTS = rospy.get_param("/checkpoints")  # Checkpoints del circuito
 MAX_LIDAR_DIST = 13.5
 NUM_LIDAR_POINTS = 10
-MAX_TIME_WITHOUT_PROGRESS = 15.0
+MAX_TIME_WITHOUT_PROGRESS = 25.0
 class TrajectoryController:
     def __init__(self):
         rospy.init_node("trajectory_controller")
@@ -191,7 +191,7 @@ class TrajectoryController:
                 ]], dtype=np.float32)
 
                 #Obtener la predicción
-                salida = model.predict(entrada)
+                salida = model.predict(entrada, verbose=0)
                 accion = np.argmax(salida)
 
                 twist = self.define_movement(accion)        
@@ -200,7 +200,8 @@ class TrajectoryController:
                 
                 nx, ny = self.obtener_posicion()
                 #Si no ha cambiado de posicion en el tiempo es que ha chocado contra una pared
-                if abs(x - nx) < 0.001 and abs(y - ny) < 0.001:
+                if abs(x - nx) < 0.0001 and abs(y - ny) < 0.0001:
+                    rospy.logwarn(f"The robot has crashed: RIP!!")
                     crash = 1
                     break
 
@@ -208,24 +209,11 @@ class TrajectoryController:
                 last_positions.append((nx, ny))
                 if len(last_positions) > 50:  # Keep last 50 positions (5 seconds at 10Hz)
                     last_positions.pop(0)
-                    
-                # Detect if robot is moving in a small circle (another form of getting stuck)
-                if len(last_positions) >= 50:
-                    # Calculate maximum distance from current position in the last 50 positions
-                    max_dist = 0
-                    for pos_x, pos_y in last_positions:
-                        dist = math.sqrt((pos_x - nx)**2 + (pos_y - ny)**2)
-                        max_dist = max(max_dist, dist)
-                
-                    # If robot hasn't moved more than 0.5m in any direction in the last 5 seconds
-                    if max_dist < 0.5:
-                        rospy.logwarn("Robot detected moving in a small area - possible loop behavior")
-                        crash = 1  # Mark as crashed due to looping
-                        break
 
                 # Use the new distance-based checkpoint detection
                 if self.is_near_checkpoint([nx, ny], threshold=1.0):  # Increased threshold to 1.0m for easier detection
                     self.current_checkpoint += 1
+                    time_since_last_checkpoint = rospy.Time.now()
                     rospy.loginfo(f"Checkpoint {self.current_checkpoint-1}/{len(CHECKPOINTS)} alcanzado!")
 
                 # Add debugging to show robot's position relative to checkpoint
