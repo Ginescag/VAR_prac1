@@ -18,11 +18,48 @@ GENOME_BIAS_LENGTH     = params["genome_bias_length"]       # longitud de LOS BI
 MUT_PROB        = params["mut_prob"]          # prob. de mutación
 CX_PROB         = params["cx_prob"]           # prob. de cruce
 NUM_GENERATIONS = params["num_gen"]            # iteraciones del GA
+CHECKPOINT_VALUE = 20.0
+CRASH_PENALTY = 0.7
 
 
+# def evaluate(params, time_elapsed):
+#     w1, w2 = 0.7, 0.3
+#     return w1 * params[0] + w2 * time_elapsed - 20 * params[1]
 def evaluate(params, time_elapsed):
-    w1, w2 = 0.7, 0.3
-    return w1 * params[0] + w2 * time_elapsed - 20 * params[1]
+    checkpoints_reached = params[0]
+    crashed = params[1]
+    
+    # DRAMATICALLY increase checkpoint reward (from 10 to 50)
+    checkpoint_reward = CHECKPOINT_VALUE * checkpoints_reached
+    
+    crash_penalty = 1
+    if crashed == 1:
+        crash_penalty = CRASH_PENALTY
+    
+    # Add completion bonus for robots that reach many checkpoints
+    completion_bonus = 0
+    total_checkpoints = 34  # From checkpoints.yaml
+    if checkpoints_reached > 0:
+        # Give exponentially increasing bonus as robots get closer to finishing
+        progress_percentage = checkpoints_reached / total_checkpoints
+        completion_bonus = 100.0 * (progress_percentage ** 2)  # Squared for exponential reward
+    
+    # Much smaller time penalties - only significant for robots making no progress
+    if checkpoints_reached == 0:
+        # Still penalize robots that just spin in place
+        time_factor = -min(0.2 * time_elapsed, 10.0)
+    elif checkpoints_reached < 5:
+        # Very small penalty for robots making some progress
+        time_factor = -min(0.05 * time_elapsed, 3.0)
+    else:
+        # Negligible time penalty for robots with good progress
+        time_factor = 0
+    
+    # Print detailed breakdown for debugging
+    print(f"Checkpoint reward: {checkpoint_reward:.1f}, Completion bonus: {completion_bonus:.1f}, " + 
+          f"Time factor: {time_factor:.1f}, Crash penalty: {crash_penalty:.1f}")
+    
+    return (checkpoint_reward + completion_bonus + time_factor) * crash_penalty
 
 def get_state(model, reference="world"):
     rospy.wait_for_service('/gazebo/get_model_state')
@@ -110,7 +147,7 @@ if __name__ == '__main__':
     initial_state = ModelState()
     initial_state.model_name = 'turtlebot3_waffle'
     initial_state.pose = Pose(
-        position=Point(x=0.0, y=0.0, z=0.0),
+        position=Point(x=-6.5, y=8.5, z=0.0),
         orientation=Quaternion(x=0.0, y=0.0, z=0.0, w=1.0)
     )
     initial_state.twist = Twist()
@@ -138,10 +175,14 @@ if __name__ == '__main__':
             fit_params = msg.data
             fit = evaluate(fit_params, tiempo)
             fitnesses.append(fit)
+            print(f"Robot #{len(fitnesses)} fitness score: {fit:.4f}")
 
             rospy.sleep(0.1)  # pequeña pausa por seguridad
             start_again(reset_world, set_model_state, initial_state)
             rospy.loginfo("Miembro acaba")
+
+        # Add after calculating fitnesses for the generation
+        rospy.loginfo('Mejor fitness gen %d: %.2f', gen, max(fitnesses))
 
         # Selección y generación siguiente
         new_pop = []
@@ -150,8 +191,8 @@ if __name__ == '__main__':
         new_pop.append(population[elite_idx])
 
         while len(new_pop) < POP_SIZE:
-            p1 = seleccion_por_torneo(population, fitnesses)
-            p2 = seleccion_por_torneo(population, fitnesses)
+            p1 = seleccion_por_torneo(population, fitnesses, 5)
+            p2 = seleccion_por_torneo(population, fitnesses, 5)
             if random.random() < CX_PROB:
                 children = crossover_uniform(p1, p2)
             else:
@@ -164,4 +205,4 @@ if __name__ == '__main__':
                     new_pop.append(child)
 
         population = new_pop
-        rospy.loginfo("Mejor fitness gén %d: %.2f", gen+1, max(fitnesses))
+        rospy.loginfo("Mejores fitness gén %d: %.2f", gen+1, max(fitnesses))
