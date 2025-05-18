@@ -7,14 +7,14 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Int32MultiArray
 from turtlebot3_msgs.msg import SensorState  # Importa el mensaje correcto
 from genetic_nav.msg import Weights
-import NeuralNetowrk
+import NeuralNetwork 
 import math
 import random
 
 CHECKPOINTS = rospy.get_param("/checkpoints")  # Checkpoints del circuito
-MAX_LIDAR_DIST = 13.5
-NUM_LIDAR_POINTS = 10
-MAX_TIME_WITHOUT_PROGRESS = 25.0
+MAX_LIDAR_DIST = 20.5
+NUM_LIDAR_POINTS = 15
+MAX_TIME_WITHOUT_PROGRESS = 20.0
 class TrajectoryController:
     def __init__(self):
         rospy.init_node("trajectory_controller")
@@ -146,9 +146,9 @@ class TrajectoryController:
             pesos_flat = msg.pesos
             bias_flat = msg.bias
 
-            pesos_list, bias_list = NeuralNetowrk.reconstruir_listas(pesos_flat, bias_flat)
+            pesos_list, bias_list = NeuralNetwork.reconstruir_listas(pesos_flat, bias_flat)
             
-            model = NeuralNetowrk.build_model_estandar(pesos_list, bias_list)
+            model = NeuralNetwork.build_model_estandar(pesos_list, bias_list)
             x, y = self.obtener_posicion()
             crash = 0
             r = rospy.Rate(10)
@@ -167,7 +167,7 @@ class TrajectoryController:
                 current_time = rospy.Time.now()
 
                 # Check for lack of checkpoint progress
-                time_since_last_checkpoint = (current_time - last_checkpoint_time).to_sec()
+                time_since_last_checkpoint = (abs(current_time - last_checkpoint_time)).to_sec()
                 if time_since_last_checkpoint > MAX_TIME_WITHOUT_PROGRESS:
                     rospy.logwarn(f"No checkpoint progress for {MAX_TIME_WITHOUT_PROGRESS} seconds")
                     crash = 1  # Mark as crashed due to lack of progress
@@ -183,8 +183,10 @@ class TrajectoryController:
             
                 # Create network input with relative measures instead of absolute positions
                 entrada = np.array([[
-                    dist_to_cp,     # Normalized distance to checkpoint [0,1]
-                    angle_to_cp,    # Normalized angle to checkpoint [-1,1]
+                    #dist_to_cp,     # Normalized distance to checkpoint [0,1]
+                    #angle_to_cp,    # Normalized angle to checkpoint [-1,1]
+                    x,
+                    y,
                     norm_lidar_i,   # Normalized left lidar [0,1]
                     norm_lidar_c,   # Normalized center lidar [0,1]
                     norm_lidar_d    # Normalized right lidar [0,1]
@@ -205,10 +207,10 @@ class TrajectoryController:
                     crash = 1
                     break
 
-                    # Store position for loop detection
-                last_positions.append((nx, ny))
-                if len(last_positions) > 50:  # Keep last 50 positions (5 seconds at 10Hz)
-                    last_positions.pop(0)
+                # Store position for loop detection
+                #last_positions.append((nx, ny))
+                #if len(last_positions) > 50:  # Keep last 50 positions (5 seconds at 10Hz)
+                #    last_positions.pop(0)
 
                 # Use the new distance-based checkpoint detection
                 if self.is_near_checkpoint([nx, ny], threshold=1.0):  # Increased threshold to 1.0m for easier detection

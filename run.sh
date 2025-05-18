@@ -14,6 +14,12 @@ sleep 3 && \
 
 docker run --rm -it -e DISPLAY=${DISPLAY} \
         -v /tmp/.X11-unix:/tmp/.X11-unix:rw --network host \
+        --gpus all \
+        --device /dev/dri \
+        --device /dev/nvidia0 \
+        --device /dev/nvidiactl \
+        --device /dev/nvidia-uvm \
+        --device /dev/nvidia-modeset \
         --workdir="/workspace" \
         --volume="$PWD:/workspace:rw" -e "TERM=xterm-256color" \
         --name $containerName \
