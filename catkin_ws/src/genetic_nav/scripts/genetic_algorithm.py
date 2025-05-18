@@ -18,7 +18,7 @@ MUT_PROB        = params["mut_prob"]          # prob. de mutación
 CX_PROB         = params["cx_prob"]           # prob. de cruce
 NUM_GENERATIONS = params["num_gen"]            # iteraciones del GA
 CHECKPOINT_VALUE = 20.0
-CRASH_PENALTY = 0.7
+CRASH_PENALTY = 0.5
 
 
 # def evaluate(params, time_elapsed):
@@ -47,9 +47,9 @@ def evaluate(params, time_elapsed):
     if checkpoints_reached == 0:
         # Still penalize robots that just spin in place
         time_factor = -min(0.2 * time_elapsed, 10.0)
-    elif checkpoints_reached < 5:
-        # Very small penalty for robots making some progress
-        time_factor = -min(0.05 * time_elapsed, 3.0)
+    #elif checkpoints_reached < 5:
+    #    # Very small penalty for robots making some progress
+    #    time_factor = -min(0.05 * time_elapsed, 3.0)
     else:
         # Negligible time penalty for robots with good progress
         time_factor = 0
@@ -226,13 +226,15 @@ if __name__ == '__main__':
             rospy.sleep(0.1)  # pequeña pausa por seguridad
             start_again(reset_world, set_model_state, initial_state)
             rospy.loginfo("Miembro acaba")
-
+            msg = Float32()
+            msg.data = fit
+            plot_pub.publish(msg)
+        if gen == NUM_GENERATIONS/2:
+            CX_PROB = CX_PROB + 0.4
         # Add after calculating fitnesses for the generation
         rospy.loginfo('Mejor fitness gen %d: %.2f', gen, max(fitnesses))
       
-        msg = Float32()
-        msg.data = max(fitnesses)
-        plot_pub.publish(msg)
+        
 
         # Selección y generación siguiente
         new_pop = []
