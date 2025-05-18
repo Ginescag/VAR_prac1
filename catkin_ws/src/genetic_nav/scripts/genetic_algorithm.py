@@ -37,7 +37,7 @@ def evaluate(params, time_elapsed):
     
     # Add completion bonus for robots that reach many checkpoints
     completion_bonus = 0
-    total_checkpoints = 34  # From checkpoints.yaml
+    total_checkpoints = 32  # From checkpoints.yaml
     if checkpoints_reached > 0:
         # Give exponentially increasing bonus as robots get closer to finishing
         progress_percentage = checkpoints_reached / total_checkpoints

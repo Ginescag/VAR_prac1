@@ -60,7 +60,7 @@ class TrajectoryController:
             #rospy.loginfo("Izquierda")
         elif accion == 1:
             # Avanzar recto
-            twist.linear.x = 0.2  # Ajusta este valor según la necesidad
+            twist.linear.x = 0.6  # Ajusta este valor según la necesidad
             twist.angular.z = 0.0
             #rospy.loginfo("Recto")
         elif accion == 2:
@@ -213,7 +213,7 @@ class TrajectoryController:
                 # Use the new distance-based checkpoint detection
                 if self.is_near_checkpoint([nx, ny], threshold=1.0):  # Increased threshold to 1.0m for easier detection
                     self.current_checkpoint += 1
-                    time_since_last_checkpoint = rospy.Time.now()
+                    last_checkpoint_time = rospy.Time.now()
                     rospy.loginfo(f"Checkpoint {self.current_checkpoint-1}/{len(CHECKPOINTS)} alcanzado!")
 
                 # Add debugging to show robot's position relative to checkpoint
@@ -233,7 +233,7 @@ class TrajectoryController:
                 x, y = nx, ny
 
             msg = Int32MultiArray()    
-            msg.data = [self.current_checkpoint, 1]
+            msg.data = [self.current_checkpoint, crash]
             self.check_pub.publish(msg)
 
         
