@@ -60,7 +60,7 @@ class TrajectoryController:
             #rospy.loginfo("Izquierda")
         elif accion == 1:
             # Avanzar recto
-            twist.linear.x = 0.6  # Ajusta este valor según la necesidad
+            twist.linear.x = 0.2  # Ajusta este valor según la necesidad
             twist.angular.z = 0.0
             #rospy.loginfo("Recto")
         elif accion == 2:

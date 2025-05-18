@@ -1,66 +1,106 @@
 #!/usr/bin/env python3
-# fitness_plotter.py - Real-time plotting of genetic algorithm fitness
+# Simple fitness plotter
 
-import rospy
 import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.animation import FuncAnimation
+import glob
+import os
 import re
-import subprocess
-from std_msgs.msg import String
 import time
 
-# Global variables to store fitness data
-generations = []
-best_fitness = []
-current_generation = 0
-fig, ax = plt.subplots(figsize=(10, 6))
-line, = ax.plot([], [], 'b-o', lw=2)
-
-# Configure plot appearance
-def setup_plot():
-    ax.set_title('Genetic Algorithm Fitness Evolution', fontsize=15)
-    ax.set_xlabel('Generation', fontsize=12)
-    ax.set_ylabel('Best Fitness Score', fontsize=12)
-    ax.grid(True)
-    fig.tight_layout()
-    return line,
-
-# Update function for the animation
-def update(frame):
-    global current_generation  # Move this to the top of the function
+def find_latest_log():
+    """Find the most recent genetic_algorithm log file"""
+    log_path = os.path.expanduser('~/.ros/log/')
+    logs = []
     
-    # Read the latest fitness data from ROS logs
-    try:
-        latest_data = subprocess.check_output(
-            "rosrun rosbag play --topics /rosout | grep -i 'fitness\\|generation' | tail -n 20",
-            shell=True, stderr=subprocess.PIPE, text=True
-        )
+    # Look in all subdirectories
+    for root, dirs, files in os.walk(log_path):
+        for file in files:
+            if file.startswith('genetic_algorithm') and file.endswith('.log'):
+                logs.append(os.path.join(root, file))
+    
+    if not logs:
+        return None
         
-        # Process the log data to extract generation and fitness
-        for line in latest_data.split('\n'):
+    # Return the most recently modified file
+    return max(logs, key=os.path.getmtime)
+
+def main():
+    plt.figure(figsize=(10, 6))
+    generations = []
+    fitness_values = []
+    
+    print("Fitness Evolution Plotter")
+    print("Looking for genetic_algorithm log files...")
+    
+    last_gen = -1
+    
+    while True:
+        log_file = find_latest_log()
+        if not log_file:
+            print("No log files found yet. Waiting...")
+            time.sleep(5)
+            continue
+            
+        print(f"Reading from: {log_file}")
+        
+        try:
+            with open(log_file, 'r') as f:
+                content = f.read()
+                
             # Look for generation info
-            gen_match = re.search(r'Generación (\d+)', line)
-            if gen_match:
-                gen_num = int(gen_match.group(1))
-                if gen_num > current_generation:
-                    current_generation = gen_num
-                    generations.append(gen_num)
+            gen_logs = re.findall(r'Generación (\d+)', content)
             
-            # Look for best fitness info
-            fit_match = re.search(r'Mejores fitness gén \d+: ([-\d.]+)', line)
-            if fit_match:
-                fit_val = float(fit_match.group(1))
-                if len(best_fitness) < len(generations):
-                    best_fitness.append(fit_val)
+            # Look for fitness info (simple version that finds all fitness mentions)
+            fit_logs = re.findall(r'Mejor fitness gen (\d+): ([-\d.]+)', content)
             
-        # Update the plot
-        if len(generations) > 0 and len(best_fitness) > 0:
-            line.set_data(generations, best_fitness)
-            ax.set_xlim(0, max(10, max(generations) + 1))
-            ax.set_ylim(min(min(best_fitness) * 1.1, 0), max(max(best_fitness) * 1.1, 1))
-    
-    except Exception as e:
-        rospy.logwarn(f"Error updating plot: {e}")
-    
-    return line,
+            if fit_logs:
+                # Reset data
+                generations = []
+                fitness_values = []
+                
+                # Extract values
+                for gen, fitness in fit_logs:
+                    gen_num = int(gen)
+                    fit_val = float(fitness)
+                    
+                    if gen_num > last_gen:
+                        generations.append(gen_num)
+                        fitness_values.append(fit_val)
+                        last_gen = gen_num
+                        print(f"Generation {gen_num}: Best fitness = {fit_val}")
+                
+                # Update the plot if we have data
+                if generations:
+                    plt.clf()
+                    plt.plot(generations, fitness_values, 'b-o', linewidth=2)
+                    plt.title('Genetic Algorithm: Best Fitness Evolution')
+                    plt.xlabel('Generation')
+                    plt.ylabel('Best Fitness Score')
+                    plt.grid(True)
+                    
+                    # Dynamic y-axis scaling
+                    if min(fitness_values) < 0:
+                        y_min = min(fitness_values) * 1.1
+                    else:
+                        y_min = 0
+                        
+                    y_max = max(1, max(fitness_values) * 1.1)
+                    plt.ylim(y_min, y_max)
+                    
+                    plt.draw()
+                    plt.pause(0.01)
+            
+            time.sleep(5)  # Check every 5 seconds
+            
+        except Exception as e:
+            print(f"Error: {e}")
+            time.sleep(5)
+
+if __name__ == "__main__":
+    print("Make sure your genetic_algorithm.py includes this line:")
+    print("rospy.loginfo(\"Mejor fitness gen %d: %.2f\", gen, max(fitnesses))")
+    print("Starting plotter...")
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nExiting plotter.")
