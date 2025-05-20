@@ -4,7 +4,7 @@ import random
 import numpy as np
 from genetic_nav.msg import Weights
 from std_srvs.srv import Empty
-from std_msgs.msg import Int32MultiArray, Float32
+from std_msgs.msg import Int32MultiArray, Float32, String
 from gazebo_msgs.srv import GetModelState, SetModelState
 from gazebo_msgs.msg import ModelState
 from geometry_msgs.msg import Pose, Twist, Point, Quaternion
@@ -161,11 +161,16 @@ def import_chromosome():
         return chromosome
     except:
         return None
+    
+def yolo_info(msg):
+    print(f"Hemos detectado un/a: {msg.data}")
+
 
 if __name__ == '__main__':
     rospy.init_node("genetic_algorithm")
     pub = rospy.Publisher('chromosomes', Weights, queue_size=10, latch=True)
     plot_pub = rospy.Publisher('fitness', Float32, queue_size=10, latch=True)
+    yolo_pub = rospy.Subscriber('object_detection', String, yolo_info)
     reset_world = rospy.ServiceProxy('/gazebo/reset_world', Empty)
     rospy.loginfo("Topico genetico creado")
 

@@ -1,5 +1,5 @@
 genetic_algorithm:
-  pop_size: 100   # Tamaño de la población
+  pop_size: 50   # Tamaño de la población
   genome_weight_length: 232   # Número de coordenadas en el genoma
   genome_bias_length: 27   # Número de sesgos en el genoma
   mut_prob: 0.1  # Probabilidad de mutación

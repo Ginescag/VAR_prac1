@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # filepath: /home/gines/Escritorio/VAR_prac1/catkin_ws/src/genetic_nav/scripts/turtlebot_yolo_detector.py
 # pip install ultralytics opencv-python cv_bridge
-# sudo apt-get install ros-${ROS_DISTRO}-cv-bridge ros-${ROS_DISTRO}-image-transport
+# sudo apt-get install ros-noetic-cv-bridge ros-noetic-image-transport
 
 import rospy
 from sensor_msgs.msg import Image
@@ -20,7 +20,7 @@ class TurtlebotYOLODetector:
         # Load YOLOv8 pre-trained on COCO
         self.model = YOLO('yolov8n.pt')
         # COCO class IDs for traffic cone and trash can
-        self.target_classes = {39: 'traffic_cone', 41: 'trash_can'}
+        self.target_classes = {39: 'traffic_cone', 0: 'person'}
         rospy.Subscriber(self.camera_topic, Image, self.image_callback)
         rospy.loginfo("Turtlebot YOLO detector initialized.")
 
@@ -31,7 +31,7 @@ class TurtlebotYOLODetector:
             rospy.logerr(f"cv_bridge error: {e}")
             return
 
-        results = self.model(cv_image)
+        results = self.model(cv_image, conf = 0.01)
         detected = []
         for r in results:
             for box in r.boxes:
